@@ -1,0 +1,46 @@
+body {
+  padding-top: 50px;
+}
+
+#main {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+#new-game {
+  width: 600px;
+}
+
+.board {
+  width: 450px;
+  padding: 2em;
+}
+
+.cell {
+  height: 135px;
+  padding: 1em;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-bottom: 1em solid black;
+  border-right: 1em solid black;
+}
+
+.cell:last-child {
+  border-right: none;
+}
+
+.board .row:last-child .cell {
+  border-bottom: none;
+}
+
+.X {
+  background-image: url("/img/X.png");
+}
+
+.O {
+  background-image: url("/img/O.png");
+}
+
+.InProgress.Human .Nothing:hover {
+  background-color: aliceblue;
+}
