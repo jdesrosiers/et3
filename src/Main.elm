@@ -3,7 +3,7 @@ module Main exposing (board, cell, heading, view)
 import Html exposing (Html, button, div, h1, text)
 import Html.Attributes exposing (class, id, type_)
 
-import Board exposing (Board, GameState(..), Player, Position(..), new)
+import Board exposing (Board, GameState(..), Player, new)
 
 
 main : Program Never Model msg
@@ -12,8 +12,13 @@ main =
 
 -- MODEL
 
+type Position =
+    TopLeft    | TopMiddle    | TopRight
+  | MiddleLeft | Center       | MiddleRight
+  | BottomLeft | BottomMiddle | BottomRight
+
 type alias Model =
-  { board : Board }
+  { board : Board Position }
 
 model : Model
 model =

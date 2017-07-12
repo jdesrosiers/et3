@@ -1,4 +1,4 @@
-module Board exposing (Board, GameState(..), Player(..), Position(..), new, occupantOf, state)
+module Board exposing (Board, GameState(..), Player(..), new, occupantOf, state)
 
 import Avl.Set as Set exposing (Set)
 
@@ -6,28 +6,23 @@ import Avl.Set as Set exposing (Set)
 type Player =
   X | O
 
-type Position =
-    TopLeft    | TopMiddle    | TopRight
-  | MiddleLeft | Center       | MiddleRight
-  | BottomLeft | BottomMiddle | BottomRight
-
 type GameState =
   InProgress | XWins | OWins | Draw
 
-type alias Board =
+type alias Board pos =
   { player : Player
-  , xs : Set Position
-  , os : Set Position
+  , xs : Set pos
+  , os : Set pos
   }
 
-new : Board
+new : Board pos
 new = { player = X, xs = Set.empty, os = Set.empty }
 
 member : a -> Set a -> Bool
 member =
   Set.member (\a b -> compare (toString a) (toString b))
 
-occupantOf : Position -> Board -> Maybe Player
+occupantOf : pos -> Board pos -> Maybe Player
 occupantOf position board =
   if member position board.xs then
     Just X
@@ -36,6 +31,6 @@ occupantOf position board =
   else
     Nothing
 
-state : Board -> GameState
+state : Board pos -> GameState
 state board =
   InProgress
