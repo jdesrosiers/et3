@@ -2,7 +2,7 @@ module MainSpec exposing (suite)
 
 import Expect exposing (Expectation)
 import Test exposing (Test, describe, test)
-import Test.Html.Selector exposing (class, classes, id, tag, text, attribute)
+import Test.Html.Selector exposing (class, classes, text)
 import Test.Html.Query as Query
 
 import Classic
@@ -19,7 +19,7 @@ suite =
                 \_ ->
                   Main.view (TicTacToeUI.Model Classic.new)
                     |> Query.fromHtml
-                    |> Query.find [ id "heading" ]
+                    |> Query.find [ class "heading" ]
                     |> Query.has [ text "Player X's Turn" ]
             ]
         , describe "new-game"
@@ -27,15 +27,15 @@ suite =
                 \_ ->
                   Main.view (TicTacToeUI.Model Classic.new)
                     |> Query.fromHtml
-                    |> Query.find [ id "new-game" ]
-                    |> Query.has [ tag "button", attribute "type" "button", text "New Game" ]
+                    |> Query.find [ class "new-game" ]
+                    |> Query.has [ text "New Game" ]
             ]
         , describe "an empty board"
             [ test "it should have classes 'InProgress' and 'Human'" <|
                 \_ ->
                   Main.view (TicTacToeUI.Model Classic.new)
                     |> Query.fromHtml
-                    |> Query.find [ id "board" ]
+                    |> Query.find [ class "board" ]
                     |> Query.has [ classes [ "InProgress", "Human" ] ]
             , test "it should have nine cells" <|
                 \_ ->

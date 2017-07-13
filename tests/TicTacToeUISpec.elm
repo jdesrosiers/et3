@@ -2,7 +2,7 @@ module TicTacToeUISpec exposing (suite)
 
 import Expect exposing (Expectation)
 import Test exposing (Test, describe, test)
-import Test.Html.Selector exposing (class, id)
+import Test.Html.Selector exposing (attribute, class, tag)
 import Test.Html.Query as Query
 
 import Html.Attributes
@@ -29,7 +29,7 @@ suite =
               \_ ->
                 TicTacToeUI.board model [ Html.Attributes.class "foo" ] []
                   |> Query.fromHtml
-                  |> Query.has [ id "board", class "Human", class "foo" ]
+                  |> Query.has [ class "board", class "Human", class "foo" ]
           , test "it should have class 'InProgress'" <|
               \_ ->
                 TicTacToeUI.board model [ Html.Attributes.class "foo" ] []
@@ -60,6 +60,13 @@ suite =
                   TicTacToeUI.cell model2 B [] []
                     |> Query.fromHtml
                     |> Query.has [ class "O" ]
+          , describe "newGameButton"
+              [ test "it should have classes 'new-game' and any other attributes passed in" <|
+                \_ ->
+                  TicTacToeUI.newGameButton [ Html.Attributes.class "foo" ] []
+                    |> Query.fromHtml
+                    |> Query.has [ class "new-game", class "foo"]
+              ]
           ]
       , describe "update"
           [ test "it should play a position" <|

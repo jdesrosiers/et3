@@ -1,10 +1,10 @@
 module Main exposing (view)
 
 import Html exposing (Html, button, div, h1, text)
-import Html.Attributes exposing (class, id, type_)
+import Html.Attributes exposing (class)
 
 import Classic exposing (Position(..))
-import TicTacToeUI exposing (Model, Msg(..))
+import TicTacToeUI exposing (Model, Msg(..), newGameButton)
 
 
 main : Program Never (Model Position) (Msg Position)
@@ -22,7 +22,7 @@ view model =
     cell = TicTacToeUI.cell model
   in
     div []
-      [ h1 [ id "heading" ] [ text (TicTacToeUI.heading model) ]
+      [ h1 [ class "heading" ] [ text (TicTacToeUI.heading model) ]
       , board [ class "container" ]
         [ div [ class "row" ]
             [ cell TopLeft [ class "col-md-4" ] []
@@ -40,5 +40,5 @@ view model =
             , cell BottomRight [ class "col-md-4" ] []
             ]
         ]
-      , button [ id "new-game", type_ "button", class "btn btn-default" ] [ text "New Game" ]
+      , newGameButton [ class "btn btn-default" ] [ text "New Game" ]
     ]

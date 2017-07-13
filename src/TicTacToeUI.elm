@@ -1,7 +1,7 @@
-module TicTacToeUI exposing (Model, Msg(..), board, cell, heading, play, update)
+module TicTacToeUI exposing (Model, Msg(..), board, cell, heading, newGameButton, play, update)
 
-import Html exposing (div, text)
-import Html.Attributes exposing (class, id)
+import Html exposing (a, div)
+import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
 
 import TicTacToe exposing (Board, Player, GameState(..))
@@ -47,7 +47,7 @@ board model attributes =
   let
     state = TicTacToe.state model.board
   in
-    div (attributes ++ [ id "board", class (toString state), class "Human" ])
+    div (attributes ++ [ class "board", class (toString state), class "Human" ])
 
 cell : Model pos -> pos -> List (Attribute pos) -> List (Html pos) -> Html pos
 cell model position attributes =
@@ -61,3 +61,7 @@ cell model position attributes =
         []
   in
     div (attributes ++ [ class "cell", class (toString player) ] ++ click)
+
+newGameButton : List (Attribute pos) -> List (Html pos) -> Html pos
+newGameButton attributes =
+  a ([ href "", class "new-game" ] ++ attributes)

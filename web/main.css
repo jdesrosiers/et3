@@ -7,11 +7,11 @@ body {
   text-align: center;
 }
 
-#new-game {
+.new-game {
   width: 600px;
 }
 
-#board {
+.board {
   width: 450px;
   padding: 2em;
 }
@@ -29,7 +29,7 @@ body {
   border-right: none;
 }
 
-#board .row:last-child .cell {
+.board .row:last-child .cell {
   border-bottom: none;
 }
 
