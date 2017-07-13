@@ -1,4 +1,4 @@
-module Board exposing (Board, GameState(..), Player(..), new, occupantOf, play, state)
+module TicTacToe exposing (Board, GameState(..), Player(..), new, occupantOf, play, state)
 
 import AnyTypeSet as Set exposing (Set)
 

@@ -5,7 +5,7 @@ import Test exposing (Test, describe, test)
 import Test.Html.Selector exposing (class, classes, id, tag, text, attribute)
 import Test.Html.Query as Query
 
-import Board
+import TicTacToe
 import Main
 import TicTacToeUI
 

@@ -7,7 +7,7 @@ import Test.Html.Query as Query
 
 import Html.Attributes
 
-import Board exposing (GameState(..), Player(..))
+import TicTacToe exposing (GameState(..), Player(..))
 import TicTacToeUI exposing (Msg(..))
 
 
@@ -90,6 +90,6 @@ suite =
                 model = TicTacToeUI.new
                 subject = TicTacToeUI.update (Play Foo) model
               in
-                Expect.equal (Just X) (Board.occupantOf Foo subject.board)
+                Expect.equal (Just X) (TicTacToe.occupantOf Foo subject.board)
         ]
     ]

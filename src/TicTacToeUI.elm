@@ -4,7 +4,7 @@ import Html exposing (div, text)
 import Html.Attributes exposing (class, id)
 import Html.Events exposing (onClick)
 
-import Board exposing (Board, Player, GameState(..))
+import TicTacToe exposing (Board, Player, GameState(..))
 
 
 -- MODEL
@@ -14,7 +14,7 @@ type alias Model pos =
 
 new : Model pos
 new =
-  { board = Board.new }
+  { board = TicTacToe.new }
 
 -- UPDATE
 
@@ -23,7 +23,7 @@ type Msg pos =
 
 play : pos -> Model pos -> Model pos
 play position model =
-  { model | board = Board.play position model.board }
+  { model | board = TicTacToe.play position model.board }
 
 update : Msg pos -> Model pos -> Model pos
 update msg model =
@@ -34,7 +34,7 @@ update msg model =
 
 heading : Model pos -> String
 heading model =
-  case Board.state model.board of
+  case TicTacToe.state model.board of
     InProgress -> "Player " ++ (toString model.board.player) ++ "'s Turn"
     XWins -> "X Wins!"
     OWins -> "O Wins!"
@@ -49,17 +49,17 @@ type alias Attribute pos =
 board : Model pos -> List (Attribute pos) -> List (Html pos) -> Html pos
 board model attributes =
   let
-    state = Board.state model.board
+    state = TicTacToe.state model.board
   in
     div (attributes ++ [ id "board", class (toString state), class "Human" ])
 
 cell : Model pos -> pos -> List (Attribute pos) -> List (Html pos) -> Html pos
 cell model position attributes =
   let
-    player = Board.occupantOf position model.board
-    state = Board.state model.board
+    player = TicTacToe.occupantOf position model.board
+    state = TicTacToe.state model.board
     click =
-      if state == InProgress && Board.occupantOf position model.board == Nothing then
+      if state == InProgress && TicTacToe.occupantOf position model.board == Nothing then
         [ onClick (Play position) ]
       else
         []
