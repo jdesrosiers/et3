@@ -1,4 +1,4 @@
-module AnyTypeSet exposing (Set, empty, fromList, insert, isEmpty, member, toList)
+module AnyTypeSet exposing (Set, diff, empty, fromList, insert, isEmpty, member, toList, subset, union)
 
 import Avl.Set as AvlSet
 
@@ -18,6 +18,10 @@ insert : k -> Set k -> Set k
 insert =
   AvlSet.insert toStringCompare
 
+union : Set k -> Set k -> Set k
+union =
+  AvlSet.union toStringCompare
+
 isEmpty : Set k -> Bool
 isEmpty =
   AvlSet.isEmpty
@@ -33,3 +37,11 @@ fromList =
 member : k -> Set k -> Bool
 member =
   AvlSet.member toStringCompare
+
+diff : Set k -> Set k -> Set k
+diff =
+  AvlSet.difference toStringCompare
+
+subset : Set k -> Set k -> Bool
+subset =
+  AvlSet.subset toStringCompare

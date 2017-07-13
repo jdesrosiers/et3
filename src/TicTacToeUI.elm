@@ -1,4 +1,4 @@
-module TicTacToeUI exposing (Model, Msg(..), board, cell, heading, new, play, update)
+module TicTacToeUI exposing (Model, Msg(..), board, cell, heading, play, update)
 
 import Html exposing (div, text)
 import Html.Attributes exposing (class, id)
@@ -11,10 +11,6 @@ import TicTacToe exposing (Board, Player, GameState(..))
 
 type alias Model pos =
   { board : Board pos }
-
-new : Model pos
-new =
-  { board = TicTacToe.new }
 
 -- UPDATE
 

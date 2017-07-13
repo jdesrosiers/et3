@@ -1,4 +1,7 @@
-module TicTacToe exposing (Board, GameState(..), Player(..), new, occupantOf, play, state)
+module TicTacToe exposing
+  (Board, GameState(..), Player(..), Rules
+  , allowedMoves, new, occupantOf, play, state
+  )
 
 import AnyTypeSet as Set exposing (Set)
 
@@ -13,10 +16,21 @@ type alias Board pos =
   { player : Player
   , xs : Set pos
   , os : Set pos
+  , rules : Rules pos
   }
 
-new : Board pos
-new = { player = X, xs = Set.empty, os = Set.empty }
+type alias Rules pos =
+  { winStates : List (Set pos)
+  , positions : Set pos
+  }
+
+new : Rules pos -> Board pos
+new rules =
+  { player = X
+  , xs = Set.empty
+  , os = Set.empty
+  , rules = rules
+  }
 
 occupantOf : pos -> Board pos -> Maybe Player
 occupantOf position board =
@@ -33,6 +47,17 @@ play position board =
     X -> { board | player = O, xs = Set.insert position board.xs }
     O -> { board | player = X, os = Set.insert position board.os }
 
+allowedMoves : Board pos -> Set pos
+allowedMoves board =
+  Set.diff board.rules.positions (Set.union board.xs board.os)
+
 state : Board pos -> GameState
 state board =
-  InProgress
+  if List.any (\winState -> Set.subset winState board.xs) board.rules.winStates then
+    XWins
+  else if List.any (\winState -> Set.subset winState board.os) board.rules.winStates then
+    OWins
+  else if Set.isEmpty (allowedMoves board)  then
+    Draw
+  else
+    InProgress

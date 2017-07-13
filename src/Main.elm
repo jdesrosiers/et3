@@ -10,7 +10,7 @@ import TicTacToeUI exposing (Model, Msg(..))
 main : Program Never (Model Position) (Msg Position)
 main =
   Html.beginnerProgram
-    { model = TicTacToeUI.new
+    { model = TicTacToeUI.Model Classic.new
     , update = TicTacToeUI.update
     , view = view
     }
