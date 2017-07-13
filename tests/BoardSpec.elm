@@ -3,8 +3,7 @@ module BoardSpec exposing (suite)
 import Expect exposing (Expectation)
 import Test exposing (Test, describe, test)
 
-import Avl.Set as Set exposing (Set)
-
+import AnyTypeSet as Set exposing (Set)
 import Board exposing (GameState(..), Player(..))
 
 
@@ -25,5 +24,11 @@ suite =
             \_ -> Expect.equal Nothing (Board.occupantOf Foo Board.new)
         , test "it should have state 'InProgress'" <|
             \_ -> Expect.equal InProgress (Board.state Board.new)
+        , test "it should be able to play any position" <|
+            \_ ->
+              let
+                subject = Board.play Foo Board.new
+              in
+                Expect.equal (Just X) (Board.occupantOf Foo subject)
         ]
     ]
