@@ -12,7 +12,7 @@ type alias Node pos =
 getMove : Board pos -> Maybe pos
 getMove board =
   let
-    node = minimax 3 board
+    node = minimax 6 board
   in
     node.position
 
@@ -50,6 +50,12 @@ minimax depth board =
         in
           bestNode depth board best (Set.toList allowedMoves)
 
+compare : Player -> comparable -> comparable -> Bool
+compare player =
+  case player of
+    X -> (>)
+    O -> (<)
+
 bestNode : Int -> Board pos -> Node pos -> List pos -> Node pos
 bestNode depth board best positions =
   case positions of
@@ -63,16 +69,9 @@ bestNode depth board best positions =
         subject = TicTacToe.play position board |> minimax (depth - 1)
         --d = Debug.log "play" position
         newBest =
-          if board.player == X then
-            if subject.score > best.score then
-              Node (Just position) subject.score
-            else
-              best
+          if compare board.player subject.score best.score then
+            Node (Just position) subject.score
           else
-            if subject.score < best.score then
-              Node (Just position) subject.score
-            else
-              best
+            best
       in
         bestNode depth board newBest tail
-

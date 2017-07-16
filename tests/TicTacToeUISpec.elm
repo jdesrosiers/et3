@@ -8,7 +8,7 @@ import Test.Html.Query as Query
 import Html.Attributes
 
 import TicTacToe exposing (GameState(..), Player(..))
-import TicTacToeUI exposing (Msg(..))
+import TicTacToeUI exposing (Msg(..), PlayerType(..))
 import Fixture exposing (Position(..))
 
 
@@ -16,7 +16,7 @@ suite : Test
 suite =
   describe "The TicTacToeUI module"
     (let
-      model = TicTacToeUI.Model Fixture.new
+      model = TicTacToeUI.Model Fixture.new Human
     in
       [ describe "heading"
           [ test "it should indicate that it is X's turn" <|
@@ -72,7 +72,7 @@ suite =
           [ test "it should play a position" <|
               \_ ->
                 let
-                  subject = TicTacToeUI.update (Play A) model
+                  (subject, _) = TicTacToeUI.update (Play A) model
                 in
                   Expect.equal (Just X) (TicTacToe.occupantOf A subject.board)
           ]

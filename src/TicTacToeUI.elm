@@ -1,30 +1,64 @@
-module TicTacToeUI exposing (Model, Msg(..), board, cell, heading, newGameButton, play, update)
+module TicTacToeUI exposing
+  ( Model, Msg(..), PlayerType(..)
+  , board, cell, heading, newGameButton, play, program, subscriptions, update
+  )
 
 import Html exposing (a, div)
 import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
+import Time exposing (Time, second)
 
+import Minimax
 import TicTacToe exposing (Board, Player, GameState(..))
 
 
+program : Board pos -> (Model pos -> Html.Html (Msg pos)) -> Program Never (Model pos) (Msg pos)
+program board view =
+  Html.program
+    { init = (Model board Human, Cmd.none)
+    , view = view
+    , update = update
+    , subscriptions = subscriptions
+    }
+
 -- MODEL
 
+type PlayerType =
+  Human | Minimax
+
 type alias Model pos =
-  { board : Board pos }
+  { board : Board pos
+  , playerType : PlayerType
+  }
 
 -- UPDATE
 
 type Msg pos =
-  Play pos
+  Play pos | Tick Time
 
 play : pos -> Model pos -> Model pos
 play position model =
-  { model | board = TicTacToe.play position model.board }
+  let
+    board = TicTacToe.play position model.board
+  in
+    case model.playerType of
+      Human -> { model | playerType = Minimax, board = board }
+      Minimax -> { model | playerType = Human, board = board }
 
-update : Msg pos -> Model pos -> Model pos
+update : Msg pos -> Model pos -> (Model pos, Cmd (Msg pos))
 update msg model =
   case msg of
-    Play position -> play position model
+    Play position -> (play position model, Cmd.none)
+    Tick _ ->
+      (if model.playerType == Minimax then Minimax.getMove model.board else Nothing)
+        |> Maybe.map (\(position) -> (play position model, Cmd.none))
+        |> Maybe.withDefault (model, Cmd.none)
+
+-- SUBSCRIPTIONS
+
+subscriptions : Model pos -> Sub (Msg pos)
+subscriptions model =
+  Time.every second Tick
 
 -- VIEW
 
@@ -47,7 +81,7 @@ board model attributes =
   let
     state = TicTacToe.state model.board
   in
-    div (attributes ++ [ class "board", class (toString state), class "Human" ])
+    div (attributes ++ [ class "board", class (toString state), class (toString model.playerType) ])
 
 cell : Model pos -> pos -> List (Attribute pos) -> List (Html pos) -> Html pos
 cell model position attributes =

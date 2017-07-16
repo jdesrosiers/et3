@@ -9,11 +9,7 @@ import TicTacToeUI exposing (Model, Msg(..), newGameButton)
 
 main : Program Never (Model Position) (Msg Position)
 main =
-  Html.beginnerProgram
-    { model = TicTacToeUI.Model Classic.new
-    , update = TicTacToeUI.update
-    , view = view
-    }
+  TicTacToeUI.program Classic.new view
 
 view : Model Position -> Html (Msg Position)
 view model =
