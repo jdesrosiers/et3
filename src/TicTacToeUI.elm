@@ -6,7 +6,10 @@ module TicTacToeUI exposing
 import Html exposing (a, div)
 import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
-import Time exposing (Time, second)
+import Maybe.Extra
+import Process
+import Task
+import Time exposing (Time)
 
 import Minimax
 import TicTacToe exposing (Board, Player, GameState(..))
@@ -34,7 +37,7 @@ type alias Model pos =
 -- UPDATE
 
 type Msg pos =
-  Play pos | Tick Time
+  Play pos | TurnCompleted
 
 play : pos -> Model pos -> Model pos
 play position model =
@@ -45,20 +48,33 @@ play position model =
       Human -> { model | playerType = Minimax, board = board }
       Minimax -> { model | playerType = Human, board = board }
 
+isMinimaxTurn : Model pos -> Bool
+isMinimaxTurn model =
+  model.playerType == Minimax
+
+toDelayedCmd : Time -> msg -> Cmd msg
+toDelayedCmd delay msg =
+  Process.sleep delay |> Task.map (always msg) |> Task.perform identity
+
 update : Msg pos -> Model pos -> (Model pos, Cmd (Msg pos))
 update msg model =
   case msg of
-    Play position -> (play position model, Cmd.none)
-    Tick _ ->
-      (if model.playerType == Minimax then Minimax.getMove model.board else Nothing)
-        |> Maybe.map (\(position) -> (play position model, Cmd.none))
-        |> Maybe.withDefault (model, Cmd.none)
+    Play position ->
+      -- Pause briefly to allow the view to update before minimax runs
+      play position model ! [ TurnCompleted |> toDelayedCmd 50 ]
+    TurnCompleted ->
+      Just model
+        |> Maybe.Extra.filter isMinimaxTurn
+        |> Maybe.map (\model -> Minimax.getMove model.board)
+        |> Maybe.Extra.join -- flatten Maybes
+        |> Maybe.map (\position -> update (Play position) model)
+        |> Maybe.withDefault (model ! [])
 
 -- SUBSCRIPTIONS
 
 subscriptions : Model pos -> Sub (Msg pos)
 subscriptions model =
-  Time.every second Tick
+  Sub.none
 
 -- VIEW
 

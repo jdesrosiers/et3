@@ -41,11 +41,7 @@ minimax depth alpha beta board =
       else
         let
           allowedMoves = TicTacToe.allowedMoves board
-          best =
-            if board.player == X then
-              Node Nothing -infinity
-            else
-              Node Nothing infinity
+          best = initialNode board.player
         in
           bestNode depth alpha beta board best (Set.toList allowedMoves)
 
@@ -77,6 +73,12 @@ chooseNode player alpha beta best node =
         result = nodeMin best node
       in
         (result, alpha, min beta result.score)
+
+initialNode : Player -> Node pos
+initialNode player =
+  case player of
+    X -> Node Nothing -infinity
+    O -> Node Nothing infinity
 
 nodeMin : Node pos -> Node pos -> Node pos
 nodeMin a b =

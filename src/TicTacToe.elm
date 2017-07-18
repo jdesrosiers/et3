@@ -57,7 +57,7 @@ state board =
     XWins
   else if List.any (\winState -> Set.subset winState board.os) board.rules.winStates then
     OWins
-  else if Set.isEmpty (allowedMoves board)  then
+  else if Set.isEmpty (allowedMoves board) then
     Draw
   else
     InProgress
