@@ -88,8 +88,9 @@ cell model position attributes =
   let
     player = TicTacToe.occupantOf position model.board
     state = TicTacToe.state model.board
+    isHumansMove = state == InProgress && model.playerType == Human
     click =
-      if state == InProgress && TicTacToe.occupantOf position model.board == Nothing then
+      if isHumansMove && TicTacToe.occupantOf position model.board == Nothing then
         [ onClick (Play position) ]
       else
         []

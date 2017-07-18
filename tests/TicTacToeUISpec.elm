@@ -3,6 +3,7 @@ module TicTacToeUISpec exposing (suite)
 import Expect exposing (Expectation)
 import Test exposing (Test, describe, test)
 import Test.Html.Selector exposing (attribute, class, tag)
+import Test.Html.Event as Event
 import Test.Html.Query as Query
 
 import Html.Attributes
@@ -42,6 +43,12 @@ suite =
                 TicTacToeUI.cell model A [ Html.Attributes.class "foo" ] []
                   |> Query.fromHtml
                   |> Query.has [ class "cell", class "foo" ]
+          , test "it should send a Play message when clicked" <|
+              \_ ->
+                TicTacToeUI.cell model A [] []
+                  |> Query.fromHtml
+                  |> Event.simulate Event.click
+                  |> Event.expect (Play A)
           , test "it should have class 'Nothing' if the cell has not been played" <|
               \_ ->
                 TicTacToeUI.cell model A [] []

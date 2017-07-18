@@ -4,6 +4,19 @@ import AnyTypeSet as Set exposing (Set)
 import TicTacToe exposing (Board, GameState(..), Player(..))
 
 
+maxDepth : Int
+maxDepth = 6
+
+-- For the purposes of this algorithm, anything greater that the max score (10) is effectively infinity
+infinity : Int
+infinity = 11
+
+winScore : Int
+winScore = 10
+
+drawScore : Int
+drawScore = 0
+
 type alias Node pos =
   { position : Maybe pos
   , score : Int
@@ -12,66 +25,63 @@ type alias Node pos =
 getMove : Board pos -> Maybe pos
 getMove board =
   let
-    node = minimax 6 board
+    node = minimax maxDepth -infinity infinity board
   in
     node.position
 
-minimax : Int -> Board pos -> Node pos
-minimax depth board =
+minimax : Int -> Int -> Int -> Board pos -> Node pos
+minimax depth alpha beta board =
   case TicTacToe.state board of
-    XWins ->
-      --let
-      --  d = Debug.log "state" XWins
-      --in
-        Node Nothing 10
-    OWins ->
-      --let
-      --  d = Debug.log "state" OWins
-      --in
-        Node Nothing -10
-    Draw ->
-      --let
-      --  d = Debug.log "state" Draw
-      --in
-        Node Nothing 0
+    XWins -> Node Nothing winScore
+    OWins -> Node Nothing -winScore
+    Draw -> Node Nothing drawScore
     InProgress ->
       if depth <= 0 then
-        Node Nothing 0
+        Node Nothing drawScore
       else
         let
           allowedMoves = TicTacToe.allowedMoves board
-          --d2 = Debug.log "allowedMoves" (Set.toList allowedMoves)
-          --d1 = Debug.log "state" InProgress
           best =
             if board.player == X then
-              Node Nothing -11
+              Node Nothing -infinity
             else
-              Node Nothing 11
+              Node Nothing infinity
         in
-          bestNode depth board best (Set.toList allowedMoves)
+          bestNode depth alpha beta board best (Set.toList allowedMoves)
 
-compare : Player -> comparable -> comparable -> Bool
-compare player =
-  case player of
-    X -> (>)
-    O -> (<)
-
-bestNode : Int -> Board pos -> Node pos -> List pos -> Node pos
-bestNode depth board best positions =
+bestNode : Int -> Int -> Int -> Board pos -> Node pos -> List pos -> Node pos
+bestNode depth alpha beta board best positions =
   case positions of
-    [] ->
-      --let
-      --  d = Debug.log "Choose" best
-      --in
-        best
+    [] -> best
     position :: tail ->
       let
-        subject = TicTacToe.play position board |> minimax (depth - 1)
-        --d = Debug.log "play" position
-        newBest =
-          if compare board.player subject.score best.score then
-            Node (Just position) subject.score
-          else
-            best
+        subject = TicTacToe.play position board |> minimax (depth - 1) alpha beta
+        node = Node (Just position) subject.score
+        (newBest, newAlpha, newBeta) = chooseNode board.player alpha beta best node
       in
-        bestNode depth board newBest tail
+        if newBeta <= newAlpha then
+          newBest -- cut-off
+        else
+          bestNode depth newAlpha newBeta board newBest tail
+
+chooseNode : Player -> Int -> Int -> Node pos -> Node pos -> (Node pos, Int, Int)
+chooseNode player alpha beta best node =
+  case player of
+    X ->
+      let
+        result = nodeMax best node
+      in
+        (result, max alpha result.score, beta)
+    O ->
+      let
+        result = nodeMin best node
+      in
+        (result, alpha, min beta result.score)
+
+nodeMin : Node pos -> Node pos -> Node pos
+nodeMin a b =
+  if b.score < a.score then b else a
+
+nodeMax : Node pos -> Node pos -> Node pos
+nodeMax a b =
+  if b.score > a.score then b else a
